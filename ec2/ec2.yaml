@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Deploys an EC2 instance
+
+Parameters:
+  Ec2Name:
+    Description: EC2 instance name
+    Type: String
+
+  Ec2LaunchTemplateId:
+    Description: ID of EC2 launch template
+    Type: String
+
+  Ec2LaunchTemplateVersion:
+    Description: Version number of the EC2 launch template
+    Type: String
+
+Resources:
+  CfEc2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      LaunchTemplate:
+        LaunchTemplateId: !Ref Ec2LaunchTemplateId
+        Version: !Ref Ec2LaunchTemplateVersion
+      SecurityGroupIds:
+        - sg-022fac8c05bdd5df0 # SecurityGroup TypicalEc2
+      SubnetId: subnet-0e91babc69c369f6c # EvanChuPublicSubnet
+      Tags:
+        - Key: Name
+          Value: !Ref Ec2Name
+
+Outputs:
+  CfInstanceId:
+    Description: Instance ID of EC2
+    Value: !Ref CfEc2Instance

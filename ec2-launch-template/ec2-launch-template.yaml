@@ -1,0 +1,61 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Create an EC2 launch template for web server
+
+Parameters:
+  Name:
+    Type: String
+    Description: Launch template name
+
+  VersionDescription:
+    Type: String
+    Description: Version description for the launch template
+
+  AmiId:
+    Type: String
+    Description: AMI ID for the EC2
+
+  InstanceType:
+    Type: String
+    Description: EC2 instance type
+    Default: t2.micro
+
+Resources:
+  CfLaunchTemplate:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-ec2-launchtemplate.html
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      VersionDescription: !Ref VersionDescription
+      LaunchTemplateName: !Ref Name
+      LaunchTemplateData:
+        BlockDeviceMappings:
+          - DeviceName: /dev/sda1
+            Ebs:
+              DeleteOnTermination: true
+              VolumeSize: 8
+              VolumeType: gp3
+        DisableApiTermination: true
+        IamInstanceProfile:
+          Arn: arn:aws:iam::992887713340:instance-profile/EvanChuEc2Role
+        ImageId: !Ref AmiId
+        InstanceType: !Ref InstanceType
+        KeyName: evan-aws-ssh-key-pair
+        MetadataOptions :
+          HttpTokens: required
+          HttpEndpoint: enabled
+
+Outputs:
+  CfLaunchTemplateId:
+    Description: ID of the EC2 launch template
+    Value: !Ref CfLaunchTemplate
+    Export:
+      Name: !Sub "${AWS::StackName}-Ec2LaunchTemplateId"
+  CfLaunchTemplateLatestVersion:
+    Description: Latest version number of the launch template
+    Value: !GetAtt CfLaunchTemplate.LatestVersionNumber
+    Export:
+      Name: !Sub "${AWS::StackName}-Ec2LaunchTemplateLatestVersion"
+  CfLaunchTemplateDefaultVersion:
+    Description: Default version number of the launch template
+    Value: !GetAtt CfLaunchTemplate.DefaultVersionNumber
+    Export:
+      Name: !Sub "${AWS::StackName}-Ec2LaunchTemplateDefaultVersion"
