@@ -4,15 +4,15 @@
 source global-vars.sh
 VersionDescription="new version"
 
-# Update the CloudFormation stack with new parameters.
-# https://docs.aws.amazon.com/cli/latest/reference/cloudformation/update-stack.html#
-aws cloudformation update-stack \
+# https://docs.aws.amazon.com/cli/latest/reference/cloudformation/deploy.html
+aws cloudformation deploy \
   --stack-name "${StackName}" \
-  --template-body "file://${TemplateFileName}" \
-  --parameters ParameterKey=Name,ParameterValue="${LaunchTemplateName}" \
-    ParameterKey=VersionDescription,ParameterValue="${VersionDescription}" \
-    ParameterKey=AmiId,ParameterValue="${AmiId}" \
-    ParameterKey=InstanceType,ParameterValue="${InstanceType}"
+  --template-file "${TemplateFileName}" \
+  --parameter-overrides \
+    Name="${LaunchTemplateName}" \
+    VersionDescription="${VersionDescription}" \
+    AmiId="${AmiId}" \
+    InstanceType="${InstanceType}"
 
 aws cloudformation wait stack-update-complete --stack-name "${StackName}"
 

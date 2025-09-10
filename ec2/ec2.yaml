@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Deploys an EC2 instance
+Description: EC2 instance
 
 Parameters:
   Ec2Name:
@@ -14,19 +14,26 @@ Parameters:
     Description: Version number of the EC2 launch template
     Type: String
 
+  Ec2UserDataScript:
+    Description: User data script encoded in base64
+    Type: String
+    NoEcho: true
+
 Resources:
   CfEc2Instance:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-ec2-instance.html
     Type: AWS::EC2::Instance
     Properties:
       LaunchTemplate:
         LaunchTemplateId: !Ref Ec2LaunchTemplateId
         Version: !Ref Ec2LaunchTemplateVersion
       SecurityGroupIds:
-        - sg-022fac8c05bdd5df0 # SecurityGroup TypicalEc2
+        - sg-022fac8c05bdd5df0 # TypicalEc2
       SubnetId: subnet-0e91babc69c369f6c # EvanChuPublicSubnet
       Tags:
         - Key: Name
           Value: !Ref Ec2Name
+      UserData: !Ref Ec2UserDataScript
 
 Outputs:
   CfInstanceId:

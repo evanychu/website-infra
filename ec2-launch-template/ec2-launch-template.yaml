@@ -31,7 +31,7 @@ Resources:
           - DeviceName: /dev/sda1
             Ebs:
               DeleteOnTermination: true
-              VolumeSize: 8
+              VolumeSize: 17
               VolumeType: gp3
         DisableApiTermination: true
         IamInstanceProfile:
