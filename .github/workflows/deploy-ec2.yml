@@ -1,0 +1,31 @@
+name: Deploy EC2
+
+on:
+  # pull_request:
+  #   branches: [ "main" ]
+  workflow_dispatch: # Allow manual triggering of the workflow
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::992887713340:role/TrustActionByGitHub
+          aws-region: us-east-1
+
+      - name: Deploy template
+        run: |
+          cd ec2-launch-template && ./update-ec2-template-stack.sh
+
+      - name: Deploy EC2
+        run: |
+          cd ec2 && ./deploy-ec2-stack.sh
