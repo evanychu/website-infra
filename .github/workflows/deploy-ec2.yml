@@ -1,7 +1,9 @@
 name: Deploy EC2
 
 on:
-  workflow_dispatch:
+  # pull_request:
+  #   branches: [ "main" ]
+  workflow_dispatch: # Allow manual triggering of the workflow
 
 jobs:
   deploy:
@@ -20,7 +22,7 @@ jobs:
           role-to-assume: arn:aws:iam::992887713340:role/TrustActionByGitHub
           aws-region: us-east-1
 
-      - name: Update template
+      - name: Deploy template
         run: |
           cd ec2-launch-template && ./update-ec2-template-stack.sh
 
