@@ -2,7 +2,6 @@
 # Update a CloudFormation stack for EC2 launch template.
 
 source global-vars.sh
-VersionDescription="new version"
 
 # https://docs.aws.amazon.com/cli/latest/reference/cloudformation/deploy.html
 aws cloudformation deploy \
@@ -13,8 +12,6 @@ aws cloudformation deploy \
     VersionDescription="${VersionDescription}" \
     AmiId="${AmiId}" \
     InstanceType="${InstanceType}"
-
-aws cloudformation wait stack-update-complete --stack-name "${StackName}"
 
 # Parse exported CloudFormation variable "*-Ec2LaunchTemplateLatestVersion"
 LatestVersion=$(aws cloudformation list-exports --output json | jq --raw-output --arg VariableName "${StackName}-Ec2LaunchTemplateLatestVersion" '.Exports[] | select(.Name==$VariableName) | .Value')
